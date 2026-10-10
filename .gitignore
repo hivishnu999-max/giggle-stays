@@ -1,0 +1,25 @@
+# Dependencies
+node_modules/
+*/node_modules/
+
+# Production build
+dist/
+frontend/dist/
+
+# Local databases
+*.db
+*.db-wal
+*.db-shm
+backend/smartstay.db*
+
+# Environment and secrets
+.env
+.env.local
+*.local
+
+# System & IDE files
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+*.log
