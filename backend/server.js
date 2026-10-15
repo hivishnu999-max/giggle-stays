@@ -368,6 +368,8 @@ app.patch('/api/enquiries/:id', requireOwner, (req, res) => {
   res.json({ ok: true });
 });
 
+app.get('/api/health', (req, res) => res.json({ status: 'ok', uptime: process.uptime() }));
+
 app.use('/api', (req, res) => res.status(404).json({ error: 'Not found.' }));
 
 const PORT = process.env.PORT || 5000;
