@@ -40,13 +40,16 @@ export default function AuthPage({ mode = 'login' }) {
     }
   }
 
-  const fillDemoOwner = async () => {
+  const handleQuickDemo = async (role) => {
     setError('');
     setBusy(true);
+    const email = role === 'owner' ? 'owner@smartstay.test' : 'tenant@smartstay.test';
+    const password = role === 'owner' ? 'owner123' : 'tenant123';
+    setForm((f) => ({ ...f, email, password, role }));
     try {
-      const user = await login('owner@smartstay.test', 'owner123');
-      showToast(`Logged in as Demo Owner!`, 'success');
-      navigate('/dashboard');
+      const user = await login(email, password);
+      showToast(`Logged in as ${user.name} (${user.role})!`, 'success');
+      navigate(user.role === 'owner' ? '/dashboard' : '/');
     } catch (err) {
       setError(err.message);
       showToast(err.message, 'error');
@@ -151,20 +154,35 @@ export default function AuthPage({ mode = 'login' }) {
           </button>
         </form>
 
-        {!isRegister && (
-          <div style={{ marginTop: '1.25rem', paddingTop: '1.25rem', borderTop: '1px dashed var(--border)', textAlign: 'center' }}>
-            <p className="muted" style={{ fontSize: '0.85rem', marginBottom: '0.6rem' }}>Testing the property manager?</p>
+        <div style={{ marginTop: '1.5rem', paddingTop: '1.25rem', borderTop: '1px dashed var(--border)', textAlign: 'center' }}>
+          <p className="muted" style={{ fontSize: '0.85rem', marginBottom: '0.6rem', fontWeight: 600 }}>
+            ⚡ 1-Click Demo Accounts:
+          </p>
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.6rem' }}>
             <button
               type="button"
               className="btn ghost small"
               disabled={busy}
-              onClick={fillDemoOwner}
-              style={{ width: '100%' }}
+              onClick={() => handleQuickDemo('owner')}
+              style={{ padding: '0.6rem 0.5rem', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '0.2rem' }}
+              title="Log in as property manager to edit stays & view enquiries"
             >
-              ⚡ 1-Click Demo Owner Login (owner@smartstay.test)
+              <strong style={{ fontSize: '0.85rem' }}>🏢 Demo Owner</strong>
+              <span style={{ fontSize: '0.72rem', opacity: 0.75 }}>owner@smartstay.test</span>
+            </button>
+            <button
+              type="button"
+              className="btn ghost small"
+              disabled={busy}
+              onClick={() => handleQuickDemo('tenant')}
+              style={{ padding: '0.6rem 0.5rem', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '0.2rem' }}
+              title="Log in as tenant to test enquiries & saved stays"
+            >
+              <strong style={{ fontSize: '0.85rem' }}>👤 Demo Tenant</strong>
+              <span style={{ fontSize: '0.72rem', opacity: 0.75 }}>tenant@smartstay.test</span>
             </button>
           </div>
-        )}
+        </div>
 
         <div style={{ textAlign: 'center', marginTop: '1.5rem', fontSize: '0.9rem' }}>
           {isRegister ? (

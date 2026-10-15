@@ -9,6 +9,16 @@ if (!owner) {
     .prepare('INSERT INTO users (name, email, phone, password_hash, role) VALUES (?, ?, ?, ?, ?)')
     .run('Demo Owner', email, '9876543210', bcrypt.hashSync('owner123', 10), 'owner');
   owner = db.prepare('SELECT * FROM users WHERE id = ?').get(info.lastInsertRowid);
+} else {
+  db.prepare('UPDATE users SET password_hash = ? WHERE id = ?').run(bcrypt.hashSync('owner123', 10), owner.id);
+}
+
+let tenant = db.prepare('SELECT * FROM users WHERE email = ?').get('tenant@smartstay.test');
+if (!tenant) {
+  db.prepare('INSERT INTO users (name, email, phone, password_hash, role) VALUES (?, ?, ?, ?, ?)')
+    .run('Demo Tenant', 'tenant@smartstay.test', '9876543211', bcrypt.hashSync('tenant123', 10), 'tenant');
+} else {
+  db.prepare('UPDATE users SET password_hash = ? WHERE id = ?').run(bcrypt.hashSync('tenant123', 10), tenant.id);
 }
 
 const samples = [

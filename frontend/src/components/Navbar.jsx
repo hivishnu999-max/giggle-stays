@@ -1,8 +1,18 @@
-import { Link, NavLink } from 'react-router-dom';
+import { Link, NavLink, useNavigate } from 'react-router-dom';
 import { useAuth } from '../auth.jsx';
 
 export default function Navbar({ favCount = 0 }) {
-  const { user, logout } = useAuth();
+  const { user, login, logout } = useAuth();
+  const navigate = useNavigate();
+
+  const handleQuickDemo = async () => {
+    try {
+      const u = await login('owner@smartstay.test', 'owner123');
+      navigate('/dashboard');
+    } catch (e) {
+      console.error('Demo login error:', e);
+    }
+  };
 
   return (
     <header className="topbar">
@@ -69,6 +79,26 @@ export default function Navbar({ favCount = 0 }) {
             </li>
           ) : (
             <>
+              <li>
+                <button
+                  type="button"
+                  className="btn small"
+                  onClick={handleQuickDemo}
+                  style={{
+                    background: 'linear-gradient(135deg, #f59e0b 0%, #d97706 100%)',
+                    color: '#fff',
+                    border: 'none',
+                    fontWeight: 700,
+                    fontSize: '0.82rem',
+                    padding: '0.35rem 0.75rem',
+                    cursor: 'pointer',
+                    boxShadow: '0 2px 8px rgba(245, 158, 11, 0.35)'
+                  }}
+                  title="Instant 1-Click Demo Owner Login"
+                >
+                  ⚡ Demo Owner
+                </button>
+              </li>
               <li>
                 <NavLink to="/login" className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`}>
                   Log in
